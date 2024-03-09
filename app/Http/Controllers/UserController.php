@@ -34,8 +34,12 @@ class UserController extends Controller
     }
 
     function UserLogin(Request $req){
+        // $key = '12345';
+        // return $key;
         $res = User::where('email','=',$req->input('email'))
-            ->where('email','=',$req->input('email'))->count();
+            ->where('password','=',$req->input('password'))->count();
+        // $value = env("JWT_KEY");
+        // return $value;
         if($res==1){
             $token = JWTToken::CreateToken($req->input('email'));
             return response()->json([
@@ -104,7 +108,6 @@ class UserController extends Controller
     function ResetPassword(Request $req){
         try{
             $email = $req->header('email');
-            // return $email;
             $password = $req->input('password');
             User::where('email','=',$email)->update(['password'=>$password]);
             return response()->json([
