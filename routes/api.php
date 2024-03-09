@@ -22,8 +22,10 @@ use App\Http\Middleware\TokenVerificationMiddleware;
 
 Route::post('/registration', [UserController::class, "UserRegistration"]);
 Route::post('/login', [UserController::class, "UserLogin"]);
+Route::post('/logout', [UserController::class, "UserLogout"]);
 Route::post('/send-otp', [UserController::class, "SendOTPCode"]);
 Route::post('/verify-otp', [UserController::class, "VerifyOTP"]);
-// token verify 
-Route::post('/reset-password', [UserController::class, "ResetPassword"])
-        ->middleware([TokenVerificationMiddleware::class]);
+Route::post('/reset-password', [UserController::class, "ResetPassword"])->middleware([TokenVerificationMiddleware::class]);
+
+Route::get('/profile', [UserController::class, "UserProfile"])->middleware([TokenVerificationMiddleware::class]);
+Route::post('/update-profile', [UserController::class, "UpdateProfile"])->middleware([TokenVerificationMiddleware::class]);

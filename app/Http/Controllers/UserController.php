@@ -37,16 +37,20 @@ class UserController extends Controller
         // $key = '12345';
         // return $key;
         $res = User::where('email','=',$req->input('email'))
-            ->where('password','=',$req->input('password'))->count();
+            ->where('password','=',$req->input('password'))
+            ->select('id')->first(); 
         // $value = env("JWT_KEY");
         // return $value;
-        if($res==1){
-            $token = JWTToken::CreateToken($req->input('email'));
+        if( $res!==null ){
+            $token = JWTToken::CreateToken($req->input('email'), $res->id);
             return response()->json([
                 'status' => 'success',
                 'message' => 'User Login successful',
-                'token' => $token
-            ],200);
+                'authorization'=> [
+                    'token' => $token, 
+                    'type' => 'bearer'
+                ]
+            ],200)->cookie('token', $token, 60*24*30);
         }
         else{
             return response()->json([
@@ -121,5 +125,46 @@ class UserController extends Controller
                 'message' => 'something went wrong',
             ],200);
         }
+    }
+
+    function UserLogout(){
+        return redirect('/login')->cookie('token', '', -1); 
+    }
+    
+    function UserProfile(Request $req){
+        $email = $req->header('email');
+        $user=User::where('email','=',$email)->first();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Request Successful', 
+            'data' => $user
+        ], 200);
+    }
+    function UpdateProfile(Request $req){
+        $email = $req->header('email');
+        $firstName = $req->input('firstName'); 
+        $lastName = $req->input('lastName'); 
+        $mobile = $req->input('mobile'); 
+        $password = $req->input('password'); 
+        $user=User::where('email','=',$email)
+                ->update([
+                    'firstName' => $firstName, 
+                    'lastName' => $lastName, 
+                    'mobile' => $mobile,
+                    'password' => $password
+                ]);
+        if($user==1){
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Request Successful', 
+            ], 200);
+        }
+        else{
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'unauthorized', 
+            ], 401);
+        }
+        
     }
 }
