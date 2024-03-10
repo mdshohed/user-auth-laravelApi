@@ -165,6 +165,6 @@ class UserController extends Controller
                 'message' => 'unauthorized', 
             ], 401);
         }
-        
-    }
+
+        }
 }
