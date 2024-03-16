@@ -10,6 +10,23 @@ use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
+    function LoginPage(){
+        return view('pages.auth.login-page');
+    }
+    function RegistrationPage(){
+        return view('pages.auth.registration-page');
+    }
+    function sendOtpPage(){
+        return view('pages.auth.send-otp-page');
+    }
+    function verifyOtpPage(){
+        return view('pages.auth.verify-otp-page');
+    }
+    function resetPasswordPage(){
+        return view('pages.auth.reset-pass-page');
+    }
+
+
     function UserRegistration(Request $req){
         try{
             User::create([
@@ -38,7 +55,7 @@ class UserController extends Controller
         // return $key;
         $res = User::where('email','=',$req->input('email'))
             ->where('password','=',$req->input('password'))
-            ->select('id')->first(); 
+            ->select('id')->first();
         // $value = env("JWT_KEY");
         // return $value;
         if( $res!==null ){
@@ -47,7 +64,7 @@ class UserController extends Controller
                 'status' => 'success',
                 'message' => 'User Login successful',
                 'authorization'=> [
-                    'token' => $token, 
+                    'token' => $token,
                     'type' => 'bearer'
                 ]
             ],200)->cookie('token', $token, 60*24*30);
@@ -63,7 +80,7 @@ class UserController extends Controller
     function SendOTPCode(Request $request){
         $email = $request->input('email');
         $otp = rand(10000, 99999);
-        $count = User::where('email','=',$email)->count(); 
+        $count = User::where('email','=',$email)->count();
         // return $count;
         if( $count==1){
             //OTP email address
@@ -88,12 +105,12 @@ class UserController extends Controller
         $email = $req->input('email');
         $otp = $req->input('otp');
         $count = User::where('email', '=', $email)
-                ->where('otp', '=', $otp)->count(); 
+                ->where('otp', '=', $otp)->count();
         if($count==1){
-            // Database OTP update 
+            // Database OTP update
             User::where('email', '=', $email)->update(['otp'=>'0']);
 
-            // pass reset token issue 
+            // pass reset token issue
             $token = JWTToken::CreateTokenForSetPassword($req->input('email'));
             return response()->json([
                 'status' => 'success',
@@ -116,7 +133,7 @@ class UserController extends Controller
             User::where('email','=',$email)->update(['password'=>$password]);
             return response()->json([
                 'status' => 'success',
-                'message' => 'Request Successful',
+                'message' => 'Request Successful'
             ],200);
         }
         catch(Exception $e){
@@ -128,41 +145,42 @@ class UserController extends Controller
     }
 
     function UserLogout(){
-        return redirect('/login')->cookie('token', '', -1); 
+        // echo "hello";
+        return redirect('/userLogin')->cookie('token', '', -1);
     }
-    
+
     function UserProfile(Request $req){
         $email = $req->header('email');
         $user=User::where('email','=',$email)->first();
         return response()->json([
             'status' => 'success',
-            'message' => 'Request Successful', 
+            'message' => 'Request Successful',
             'data' => $user
         ], 200);
     }
     function UpdateProfile(Request $req){
         $email = $req->header('email');
-        $firstName = $req->input('firstName'); 
-        $lastName = $req->input('lastName'); 
-        $mobile = $req->input('mobile'); 
-        $password = $req->input('password'); 
+        $firstName = $req->input('firstName');
+        $lastName = $req->input('lastName');
+        $mobile = $req->input('mobile');
+        $password = $req->input('password');
         $user=User::where('email','=',$email)
                 ->update([
-                    'firstName' => $firstName, 
-                    'lastName' => $lastName, 
+                    'firstName' => $firstName,
+                    'lastName' => $lastName,
                     'mobile' => $mobile,
                     'password' => $password
                 ]);
         if($user==1){
             return response()->json([
                 'status' => 'success',
-                'message' => 'Request Successful', 
+                'message' => 'Request Successful',
             ], 200);
         }
         else{
             return response()->json([
                 'status' => 'failed',
-                'message' => 'unauthorized', 
+                'message' => 'unauthorized',
             ], 401);
         }
 

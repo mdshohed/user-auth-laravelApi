@@ -18,13 +18,15 @@ class TokenVerificationMiddleware
     {
         $token=$request->header('token');
         $result = JWTToken::VerifyToken($token);
+
         if($result=='unauthorized'){
-            return redirect('/login');  
+            return redirect('/login');
         }
         else{
             $request->headers->set('email', $result->userEmail);
             $request->headers->set('id', $result->userID);
             return $next($request);
         }
+        return $next($request);
     }
 }

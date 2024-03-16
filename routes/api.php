@@ -12,7 +12,7 @@ use App\Http\Middleware\TokenVerificationMiddleware;
 |
 | Here is where you can register API routes for your application. These
 | routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
+| be assigned to the "api" middleware gro]\up. Make something great!
 |
 */
 
@@ -20,6 +20,7 @@ use App\Http\Middleware\TokenVerificationMiddleware;
 //     return $request->user();
 // });
 
+// api routes
 Route::post('/registration', [UserController::class, "UserRegistration"]);
 Route::post('/login', [UserController::class, "UserLogin"]);
 Route::post('/logout', [UserController::class, "UserLogout"]);
@@ -29,3 +30,11 @@ Route::post('/reset-password', [UserController::class, "ResetPassword"])->middle
 
 Route::get('/profile', [UserController::class, "UserProfile"])->middleware([TokenVerificationMiddleware::class]);
 Route::post('/update-profile', [UserController::class, "UpdateProfile"])->middleware([TokenVerificationMiddleware::class]);
+
+// page routes
+Route::get('userLogin', [UserController::class, 'LoginPage']);
+Route::get('userRegistration', [UserController::class, 'RegistrationPage']);
+Route::get('sendOtp', [UserController::class, 'sendOtpPage']);
+Route::get('verifyOtp', [UserController::class, 'verifyOtpPage']);
+Route::get('resetPassword', [UserController::class, 'resetPasswordPage']);
+// Route::get('dashboard', [UserController::class, 'dashboardPage']);

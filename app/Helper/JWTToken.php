@@ -10,7 +10,7 @@ class JWTToken{
   public static function CreateToken($userEmail, $userID):string{
     // $key = env('JWT_KEY');
     $key = "12345";
-    // return $key; 
+    // return $key;
     $payload=[
       'iss'=>'laravel-token',
       'iat'=>time(),
