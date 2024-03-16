@@ -4,6 +4,7 @@ namespace App\Helper;
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use Exception;
 // use Laravel\Prompts\Key;
 
 class JWTToken{
@@ -44,6 +45,7 @@ class JWTToken{
         $key = "12345";
         $decode = JWT::decode($token, new Key($key, 'HS256'));
         // print_r($decoded);
+        // echo $decode->userEmail;
         return $decode;
       }
     }
