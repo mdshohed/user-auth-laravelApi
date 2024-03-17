@@ -10,3 +10,12 @@ composer require paragonie/sodium_compat
 extension: PHP Intelephense
 ```
 
+## how to open this project 
+
+```shall
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan serve
+```shall
+
